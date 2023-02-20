@@ -6,7 +6,7 @@ const categoriesPath = "./data/categories.json";
 let posts = [];
 let categories = [];
 
-function initialize() {
+const initialize = () => {
     return new Promise((resolve, reject) => {
         fs.readFile(postsPath, "utf8", (err, data) => {
             if (err) {
@@ -24,9 +24,9 @@ function initialize() {
             }
         });
     });
-}
+};
 
-function getAllPosts() {
+const getAllPosts = () => {
     return new Promise((resolve, reject) => {
         if (posts.length === 0) {
             reject("No posts found");
@@ -34,20 +34,20 @@ function getAllPosts() {
             resolve(posts);
         }
     });
-}
+};
 
-function getPublishedPosts() {
+const getPublishedPosts = () => {
     return new Promise((resolve, reject) => {
-        const publishedPosts = posts.filter(post => post.published);
+        const publishedPosts = posts.filter((post) => post.published);
         if (publishedPosts.length === 0) {
             reject("No published posts found");
         } else {
             resolve(publishedPosts);
         }
     });
-}
+};
 
-function getCategories() {
+const getCategories = () => {
     return new Promise((resolve, reject) => {
         if (categories.length === 0) {
             reject("No categories found");
@@ -55,11 +55,53 @@ function getCategories() {
             resolve(categories);
         }
     });
-}
+};
+
+
+
+const getPostsByCategory = (category) => {
+    return new Promise((resolve, reject) => {
+        const filteredPosts = posts.filter((post) => post.category === category);
+        if (filteredPosts.length === 0) {
+            reject("No results returned");
+        } else {
+            resolve(filteredPosts);
+        }
+    });
+};
+
+const getPostsByMinDate = (minDateStr) => {
+    return new Promise((resolve, reject) => {
+        const filteredPosts = posts.filter((post) => new Date(post.postDate) >= new Date(minDateStr));
+        if (filteredPosts.length === 0) {
+            reject("No results returned");
+        } else {
+            resolve(filteredPosts);
+        }
+    });
+};
+
+const getPostById = (id) => {
+    return new Promise((resolve, reject) => {
+        const post = posts.find((post) => post.id === id);
+        if (!post) {
+            reject("No result returned");
+        } else {
+            resolve(post);
+        }
+    });
+};
+
+
+
 
 module.exports = {
     initialize,
     getAllPosts,
     getPublishedPosts,
-    getCategories
+    getCategories,
+    getPostsByCategory,
+    getPostsByMinDate,
+    getPostById
+
 };
